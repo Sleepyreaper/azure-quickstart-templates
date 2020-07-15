@@ -1,0 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger:
+- "*"
+
+stages:
+  - stage: test
+    jobs:
+      - job: 'validateandtest'
+        pool:
+          vmimage: windows-latest
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'ARM Deployment'
+              subscriptionId: '9505fc5c-5c27-40bd-a0e9-c8fae6ea400e'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'BA_ARM_DeploymentDemo'
+              location: 'East US'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/101-vm-simple-windows/azuredeploy.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/101-vm-simple-windows/azuredeploy.parameters.json'
+              deploymentMode: 'Validation'
+        
